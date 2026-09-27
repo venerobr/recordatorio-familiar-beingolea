@@ -18,6 +18,7 @@ import android.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import com.onesignal.OneSignal
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -180,12 +181,29 @@ class MainActivity : ComponentActivity() {
                     status.text = "Permite las notificaciones de Cumpleaños Beingolea en Ajustes del teléfono."
                     return@launch
                 }
+                OneSignal.User.pushSubscription.optIn()
+                status.text = "Permiso concedido. Comprobando el registro de OneSignal…"
+                if (!waitForPushSubscription()) {
+                    status.text = "Android permitió las notificaciones, pero OneSignal no pudo registrar este teléfono. Comprueba que tenga Google Play Services y conexión a internet, cierra y abre la app e intenta de nuevo."
+                    return@launch
+                }
                 prefs.edit().putString("member_id", member.id).putString("member_name", member.name).apply()
-                status.text = "¡Listo, ${member.name}! Este teléfono recibirá un aviso visible el día del cumpleaños."
+                status.text = "¡Listo, ${member.name}! OneSignal confirmó el registro; este teléfono recibirá avisos de cumpleaños."
             } catch (_: Exception) {
                 status.text = "No se pudo activar el permiso. Revisa Ajustes > Notificaciones."
             }
         }
+    }
+
+    private suspend fun waitForPushSubscription(): Boolean {
+        repeat(30) {
+            val subscription = OneSignal.User.pushSubscription
+            if (subscription.optedIn && !subscription.id.isNullOrBlank() && !subscription.token.isNullOrBlank()) {
+                return true
+            }
+            delay(1000)
+        }
+        return false
     }
 
     private fun getBirthday(id: String, code: String): Triple<String, String, String> {
@@ -206,6 +224,19 @@ class MainActivity : ComponentActivity() {
 
     private fun registerExistingMember(id: String) {
         OneSignal.login(id)
+        lifecycleScope.launch {
+            status.text = "Comprobando el registro de notificaciones…"
+            try {
+                OneSignal.User.pushSubscription.optIn()
+                status.text = if (waitForPushSubscription()) {
+                    "Notificaciones activas en este teléfono."
+                } else {
+                    "No se confirmó el registro en OneSignal. Selecciona tu nombre y pulsa Activar notificaciones para intentarlo de nuevo."
+                }
+            } catch (_: Exception) {
+                status.text = "No se pudo comprobar el registro de OneSignal. Abre la app con conexión a internet e inténtalo de nuevo."
+            }
+        }
     }
 
     private fun label(text: String, size: Int, color: Int, bold: Boolean): TextView = TextView(this).apply {
