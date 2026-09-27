@@ -1,14 +1,13 @@
 name: Crear APK Android
-
 on:
   workflow_dispatch:
-
 permissions:
   contents: read
-
 jobs:
   build-apk:
     runs-on: ubuntu-latest
+    env:
+      ANDROID_HOME: /usr/local/lib/android/sdk
     steps:
       - name: Descargar el codigo
         uses: actions/checkout@v4
@@ -22,9 +21,9 @@ jobs:
         with:
           gradle-version: '8.13'
       - name: Aceptar licencias Android
-        run: yes | sdkmanager --licenses >/dev/null
+        run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses >/dev/null
       - name: Instalar Android SDK 36
-        run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
+        run: $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-36" "build-tools;36.0.0"
       - name: Compilar APK de instalacion
         working-directory: android
         run: gradle --no-daemon :app:assembleDebug
