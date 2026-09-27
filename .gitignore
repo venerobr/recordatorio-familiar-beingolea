@@ -1,0 +1,10 @@
+.wrangler/
+.gradle/
+**/.gradle/
+**/build/
+**/local.properties
+**/google-services.json
+**/*.jks
+**/*.keystore
+**/service-account*.json
+**/fcm-*.json

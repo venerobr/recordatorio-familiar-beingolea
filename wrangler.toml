@@ -1,0 +1,17 @@
+name = "recordatorio-familiar-beingolea"
+main = "src/worker.js"
+compatibility_date = "2026-09-26"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "recordatorio-familiar"
+database_id = "3e731b95-2b22-4eed-9ba1-8aeba734e0a4"
+migrations_dir = "migrations"
+
+[triggers]
+crons = ["0 13 * * *"]
