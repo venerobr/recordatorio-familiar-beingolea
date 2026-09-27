@@ -1,6 +1,6 @@
 package com.beingolea.recordatorios
 
-import android.app.Activity
+import androidx.activity.ComponentActivity
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
@@ -26,7 +26,7 @@ import java.net.URL
 
 data class FamilyMember(val id: String, val name: String)
 
-class MainActivity : Activity() {
+class MainActivity : ComponentActivity() {
     private val green = Color.rgb(20, 111, 101)
     private val dark = Color.rgb(27, 54, 51)
     private val prefs by lazy { getSharedPreferences("family", MODE_PRIVATE) }
