@@ -11,10 +11,10 @@ android {
         applicationId = "com.beingolea.recordatorios"
         minSdk = 23
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 2
+        versionName = "1.0.1"
         buildConfigField("String", "API_BASE_URL", "\"https://recordatorio-familiar-beingolea.saludos-familia.workers.dev\"")
-        buildConfigField("String", "ONESIGNAL_APP_ID", "\"c31f4d2e-5002-450f-aeaa-a2e1a4570094\"")
+        buildConfigField("String", "ONESIGNAL_APP_ID", "\"c31f4d2e-5002-450f-aaea-a2e1a4570094\"")
     }
 
     buildFeatures { buildConfig = true }
